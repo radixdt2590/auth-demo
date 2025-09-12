@@ -1,5 +1,6 @@
 import CustomKeyboardView from "@/components/CustomKeyboardView";
 import Loading from "@/components/Loading";
+import { useAuth } from "@/context/authContext";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useRouter } from "expo-router";
@@ -21,13 +22,23 @@ import {
 
 export default function SignIn() {
   const router = useRouter();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert("SignIn", "Please fill all the fields!");
+      return;
+    }
+
+    setLoading(true);
+
+    const response = await login({ email, password });
+    setLoading(false);
+    if (!response.status) {
+      Alert.alert("SignIn", response.message);
       return;
     }
   };

@@ -1,5 +1,6 @@
 import CustomKeyboardView from "@/components/CustomKeyboardView";
 import Loading from "@/components/Loading";
+import { useAuth } from "@/context/authContext";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useRouter } from "expo-router";
@@ -26,14 +27,23 @@ export default function SignUp() {
   const [username, setUSername] = useState("");
   const [profileUrl, setProfileUrl] = useState("");
   const [loading, setLoading] = useState(false);
+  const { SignUp } = useAuth();
 
-  const handleRegister = () => {
-    console.log("🚀 ~ handleRegister ~ email:", email)
-    console.log("🚀 ~ handleRegister ~ password:", password)
-    console.log("🚀 ~ handleRegister ~ username:", username)
-    console.log("🚀 ~ handleRegister ~ username:", profileUrl)
+  const handleRegister = async () => {
+    console.log("🚀 ~ handleRegister ~ email:", email);
+    console.log("🚀 ~ handleRegister ~ password:", password);
+    console.log("🚀 ~ handleRegister ~ username:", username);
+    console.log("🚀 ~ handleRegister ~ username:", profileUrl);
     if (!email || !password || !username || !profileUrl) {
       Alert.alert("SignUp", "Please fill all the fields!");
+      return;
+    }
+    setLoading(true);
+    let response = await SignUp({ email, password, username, profileUrl });
+    console.log("🚀 ~ handleRegister ~ response:--------->", response);
+    setLoading(false);
+    if (!response.success) {
+      Alert.alert("SignUp", response.message);
       return;
     }
   };
