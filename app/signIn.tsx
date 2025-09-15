@@ -37,10 +37,13 @@ export default function SignIn() {
 
     const response = await login({ email, password });
     setLoading(false);
-    if (!response.status) {
-      Alert.alert("SignIn", response.message);
+    
+    if (!response.success) {
+      Alert.alert("SignIn", response.message || "Login failed");
       return;
     }
+    
+    // Success - user will be automatically redirected by the auth context
   };
 
   return (
@@ -77,6 +80,8 @@ export default function SignIn() {
                 className="flex-1 font-semibold text-neutral-700"
                 placeholder="Email address"
                 placeholderTextColor="gray"
+                autoCapitalize="none"
+                keyboardType="email-address"
               />
             </View>
             <View className="gap-3">
@@ -125,7 +130,7 @@ export default function SignIn() {
                 style={{ fontSize: hp(1.8) }}
                 className="font-semibold text-neutral-500"
               >
-                Don't have an account?{" "}
+                Don&apos;t have an account?{" "}
               </Text>
               <Pressable onPress={() => router.push("/signUp")}>
                 <Text

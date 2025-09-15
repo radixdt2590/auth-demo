@@ -24,28 +24,27 @@ export default function SignUp() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [username, setUSername] = useState("");
+  const [username, setUsername] = useState("");
   const [profileUrl, setProfileUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const { SignUp } = useAuth();
 
   const handleRegister = async () => {
-    console.log("🚀 ~ handleRegister ~ email:", email);
-    console.log("🚀 ~ handleRegister ~ password:", password);
-    console.log("🚀 ~ handleRegister ~ username:", username);
-    console.log("🚀 ~ handleRegister ~ username:", profileUrl);
     if (!email || !password || !username || !profileUrl) {
       Alert.alert("SignUp", "Please fill all the fields!");
       return;
     }
+    
     setLoading(true);
-    let response = await SignUp({ email, password, username, profileUrl });
-    console.log("🚀 ~ handleRegister ~ response:--------->", response);
+    const response = await SignUp({ email, password, username, profileUrl });
     setLoading(false);
+    
     if (!response.success) {
-      Alert.alert("SignUp", response.message);
+      Alert.alert("SignUp", response.message || "Sign up failed");
       return;
     }
+    
+    // Success - user will be automatically redirected by the auth context
   };
 
   return (
@@ -73,11 +72,12 @@ export default function SignUp() {
             >
               <Feather name="user" size={hp(2.7)} color="gray" />
               <TextInput
-                onChangeText={(value) => setUSername(value)}
+                onChangeText={(value) => setUsername(value)}
                 style={{ fontSize: hp(2) }}
                 className="flex-1 font-semibold text-neutral-700"
                 placeholder="Username"
                 placeholderTextColor="gray"
+                autoCapitalize="none"
               />
             </View>
             <View
@@ -95,6 +95,8 @@ export default function SignUp() {
                 className="flex-1 font-semibold text-neutral-700"
                 placeholder="Email address"
                 placeholderTextColor="gray"
+                autoCapitalize="none"
+                keyboardType="email-address"
               />
             </View>
             <View
@@ -120,8 +122,10 @@ export default function SignUp() {
                 onChangeText={(value) => setProfileUrl(value)}
                 style={{ fontSize: hp(2) }}
                 className="flex-1 font-semibold text-neutral-700"
-                placeholder="Profile Url"
+                placeholder="Profile URL"
                 placeholderTextColor="gray"
+                autoCapitalize="none"
+                keyboardType="url"
               />
             </View>
             {loading ? (

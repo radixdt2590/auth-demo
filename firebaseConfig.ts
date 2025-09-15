@@ -1,49 +1,27 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import {
-  getAuth
-} from "firebase/auth";
+import { initializeAuth } from "firebase/auth";
 import { collection, getFirestore } from "firebase/firestore";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
+// TODO - Replace below code block with proper react native expo env handling way
 const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY,
-  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.FIREBASE_PROJECTID,
-  storageBucket: process.env.FIREBASE_PROJECTID,
-  messagingSenderId: process.env.FIREBASE_SENDER_ID,
-  appId: process.env.FIREBASE_APPID,
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECTID,
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_PROJECTID,
+  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_SENDER_ID,
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APPID,
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// ✅ Class-based persistence adapter
-// class ReactNativePersistence implements Persistence {
-//   type: "LOCAL" = "LOCAL";
-//   async _isAvailable(): Promise<boolean> {
-//     return true;
-//   }
-//   async _set(key: string, value: string): Promise<void> {
-//     await AsyncStorage.setItem(key, value);
-//   }
-//   async _get(key: string): Promise<string | null> {
-//     return AsyncStorage.getItem(key);
-//   }
-//   async _remove(key: string): Promise<void> {
-//     await AsyncStorage.removeItem(key);
-//   }
-// }
-
-export const auth = getAuth(app);
-
-// Apply persistence
-// setPersistence(auth, new ReactNativePersistence()).catch((err) => {
-//   console.error("Failed to set persistence:", err);
-// });
+// Initialize Auth - Firebase automatically handles persistence in React Native
+export const auth = initializeAuth(app);
 
 export const db = getFirestore(app);
 
