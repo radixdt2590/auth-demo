@@ -47,11 +47,14 @@ const AuthContext = createContext<AuthContextProps | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | undefined>(undefined);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       try {
+        console.log("🚀 ~ AuthProvider ~ firebaseUser:", firebaseUser);
         if (firebaseUser) {
           setIsAuthenticated(true);
           await updateUserData(firebaseUser.uid, firebaseUser.email || "");
@@ -76,6 +79,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (docSnap.exists()) {
         const data = docSnap.data();
+        console.log("🚀 ~ updateUserData ~ data:", data);
         setUser({
           id: userId,
           email: data.email || email,
@@ -85,6 +89,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         });
       } else {
         // If user document doesn't exist, create a basic user object with Firebase user email
+        console.log("User document doesn't exist, creating basic user object");
         setUser({
           id: userId,
           email: email,
@@ -105,7 +110,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       await signOut(auth);
       return { success: true };
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error occurred";
       return { success: false, message: errorMessage };
     }
   };
@@ -114,6 +120,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const { email, password } = data;
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
+      console.log("🚀 ~ login ~ response:---------->", response);
       return {
         success: true,
         data: response.user,
@@ -143,8 +150,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const SignUp = async (data: SignUpData): Promise<AuthResponse> => {
     try {
       const { email, password, username, profileUrl } = data;
-      const response = await createUserWithEmailAndPassword(auth, email, password);
-      
+      const response = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
       await setDoc(doc(db, "users", response.user.uid), {
         username,
         profileUrl,
@@ -152,7 +163,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         email,
         createdAt: new Date().toISOString(),
       });
-      
+
       return {
         success: true,
         data: response.user,
