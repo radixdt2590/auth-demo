@@ -4,7 +4,7 @@ import { useAuth } from "@/context/authContext";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
 import { Image } from "expo-image";
-import { Platform, Pressable, Text, View } from "react-native";
+import { Platform, Text, View } from "react-native";
 import { Menu, MenuOptions, MenuTrigger } from "react-native-popup-menu";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -26,7 +26,6 @@ export default function HomeHeader() {
   // Default profile image if user doesn't have one
   const defaultProfileUrl =
     "https://via.placeholder.com/150/6366f1/ffffff?text=U";
-  console.log("🚀 ~ HomeHeader ~ user:", user);
 
   return (
     <View
@@ -41,14 +40,12 @@ export default function HomeHeader() {
       <View className="flex">
         <Menu>
           <MenuTrigger>
-            <Pressable>
               <Image
                 style={{ height: hp(4.3), aspectRatio: 1, borderRadius: 100 }}
                 source={user?.profileUrl || defaultProfileUrl}
                 placeholder={{ blurhash }}
                 transition={1000}
               />
-            </Pressable>
           </MenuTrigger>
           <MenuOptions
             customStyles={{
@@ -61,8 +58,6 @@ export default function HomeHeader() {
                 shadowOpacity: 0.2,
                 shadowOffset: { width: 0, height: 0 },
                 width: 160,
-                elevation: 10,
-                zIndex: 1000,
               },
             }}
           >
@@ -80,16 +75,6 @@ export default function HomeHeader() {
             />
           </MenuOptions>
         </Menu>
-        {/* <Menu onSelect={(value) => alert(`Selected number: ${value}`)}>
-          <MenuTrigger text="Select option" />
-          <MenuOptions>
-            <MenuOption value={1} text="One" />
-            <MenuOption value={2}>
-              <Text style={{ color: "red" }}>Two</Text>
-            </MenuOption>
-            <MenuOption value={3} disabled={true} text="Three" />
-          </MenuOptions>
-        </Menu> */}
       </View>
     </View>
   );
