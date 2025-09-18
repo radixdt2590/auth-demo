@@ -1,8 +1,8 @@
 import { AuthProvider, useAuth } from "@/context/authContext";
 import { Slot, useRouter, useSegments } from "expo-router";
 import { useEffect } from "react";
-import { View } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
+import { SafeAreaView } from "react-native-safe-area-context";
 import "../global.css";
 
 const MainLayout = () => {
@@ -18,9 +18,9 @@ const MainLayout = () => {
   }, [isAuthenticated]);
 
   return (
-    <View className="flex-1 pt-20">
+    <SafeAreaView style={{ flex: 1 }} edges={["left", "right", "bottom"]}>
       <Slot />
-    </View>
+    </SafeAreaView>
   );
 };
 
