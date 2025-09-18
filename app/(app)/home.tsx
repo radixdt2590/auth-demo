@@ -1,6 +1,8 @@
 import ChatList from "@/components/ChatList";
 import { useAuth } from "@/context/authContext";
+import { usersRef } from "@/firebaseConfig";
 import { StatusBar } from "expo-status-bar";
+import { getDocs, query, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
@@ -19,29 +21,27 @@ export default function Home() {
   const { user } = useAuth();
   
   useEffect(() => {
-    console.log("🚀 ~ Home ~ user:", user);
     if (user?.id) {
-      // getUsers();
+      getUsers();
     } else {
       setLoading(false);
     }
   }, [user]);
 
-  // const getUsers = async () => {
-  //   console.log("inside getUsers==============");
-  //   const q = query(usersRef, where("userId", "!=", user?.id));
-  //   const querySnapshot = await getDocs(q);
-  //   let data: { [x: string]: any; }[] = [];
+  const getUsers = async () => {
+    const q = query(usersRef, where("userId", "!=", user?.id));
+    const querySnapshot = await getDocs(q);
+    let data: User[] = [];
 
-  //   querySnapshot.forEach((doc) => {
-  //     data.push({ ...doc.data() });
-  //   });
-  //   console.log("users------", data);
-  // };
+    querySnapshot.forEach((doc) => {
+      data.push({ ...doc.data() as User });
+    });
+
+    setUsers(data);
+  };
 
   return (
     <View className="flex-1 bg-white">
-      <Text className="text-xl font-bold text-blue-500">Home</Text>
       <StatusBar style="light" />
       {loading ? (
         <View className="flex items-center" style={{ top: hp(30) }}>

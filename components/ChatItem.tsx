@@ -15,6 +15,7 @@ export default function ChatItem({
   noBorder: boolean;
   index: number;
 }) {
+  console.log("🚀 ~ ChatItem ~ item:-----------------", item)
   const openChatRoom = () => {
     router.push({ pathname: "/chatRoom", params: item });
   };
@@ -25,12 +26,11 @@ export default function ChatItem({
       onPress={openChatRoom}
     >
       <Image
-        // source={require("../assets/images/react-logo.png")}
         source={{ uri: item.profileUrl }}
         style={{ height: hp(6), width: hp(6), borderRadius: 100 }}
-        // className="rounded-full"
         placeholder={blurhash}
         transition={500}
+        contentFit="cover"
       />
       <View className="flex-1 gap-1">
         <View className="flex-row justify-between">

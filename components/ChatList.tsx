@@ -15,7 +15,7 @@ export default function ChatList({ users }: { users: User[] }) {
   console.log("🚀 ~ ChatList ~ users:", users.length);
   const router = useRouter();
   return (
-    <View>
+    <View className="flex-1">
       <FlatList
         data={users}
         contentContainerStyle={{ flex: 1, paddingVertical: 25 }}
