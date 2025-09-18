@@ -54,7 +54,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       try {
-        console.log("🚀 ~ AuthProvider ~ firebaseUser:", firebaseUser);
         if (firebaseUser) {
           setIsAuthenticated(true);
           await updateUserData(firebaseUser.uid, firebaseUser.email || "");
@@ -79,7 +78,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (docSnap.exists()) {
         const data = docSnap.data();
-        console.log("🚀 ~ updateUserData ~ data:", data);
         setUser({
           id: userId,
           email: data.email || email,
@@ -89,7 +87,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         });
       } else {
         // If user document doesn't exist, create a basic user object with Firebase user email
-        console.log("User document doesn't exist, creating basic user object");
         setUser({
           id: userId,
           email: email,
@@ -120,7 +117,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const { email, password } = data;
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
-      console.log("🚀 ~ login ~ response:---------->", response);
+
       return {
         success: true,
         data: response.user,

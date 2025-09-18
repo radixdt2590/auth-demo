@@ -1,22 +1,20 @@
 import React from "react";
 
 import { ScrollView, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MessageItem from "./MessageItem";
 
 export default function MessageList({
   messages,
   currentUser,
+  scrollViewRef,
 }: {
   messages: any;
   currentUser: any;
+  scrollViewRef: any;
 }) {
-  const { top } = useSafeAreaInsets();
-
-  console.log("🚀 ~ room header ~ user:", currentUser);
-
   return (
     <ScrollView
+      ref={scrollViewRef}
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ paddingTop: 10 }}
     >

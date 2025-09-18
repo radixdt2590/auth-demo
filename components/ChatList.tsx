@@ -11,8 +11,13 @@ interface User {
   role?: string;
 }
 
-export default function ChatList({ users }: { users: User[] }) {
-  console.log("🚀 ~ ChatList ~ users:", users.length);
+export default function ChatList({
+  users,
+  currentUser,
+}: {
+  users: User[];
+  currentUser: User;
+}) {
   const router = useRouter();
   return (
     <View className="flex-1">
@@ -23,12 +28,12 @@ export default function ChatList({ users }: { users: User[] }) {
         showsVerticalScrollIndicator={false}
         renderItem={({ item, index }) => (
           <>
-            {console.log("index---", index)}
             <ChatItem
               noBorder={index + 1 === users.length}
               item={item}
               index={index}
               router={router}
+              currentUser={currentUser}
             />
           </>
         )}

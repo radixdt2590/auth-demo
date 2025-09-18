@@ -1,6 +1,14 @@
-import { blurhash } from "@/utills/common";
+import { db } from "@/firebaseConfig";
+import { blurhash, formatDate, getRoomId } from "@/utills/common";
 import { Image } from "expo-image";
-import React from "react";
+import {
+  collection,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+} from "firebase/firestore";
+import React, { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
@@ -9,15 +17,50 @@ export default function ChatItem({
   router,
   noBorder,
   index,
+  currentUser,
 }: {
   item: any;
   router: any;
   noBorder: boolean;
   index: number;
+  currentUser: any;
 }) {
-  console.log("🚀 ~ ChatItem ~ item:-----------------", item)
+  const [lastMessage, setLastMessage] = useState<any>(undefined);
+
+  useEffect(() => {
+    let roomId = getRoomId(currentUser?.id, item?.userId);
+    const docRef = doc(db, "rooms", roomId);
+    const messagesRef = collection(docRef, "messages");
+    const q = query(messagesRef, orderBy("createdAt", "desc"));
+
+    let unsub = onSnapshot(q, (snapshot) => {
+      let allMessages = snapshot.docs.map((doc) => {
+        return doc.data();
+      });
+      setLastMessage(allMessages[0] ? allMessages[0] : null);
+    });
+
+    return unsub;
+  }, []);
+
   const openChatRoom = () => {
     router.push({ pathname: "/chatRoom", params: item });
+  };
+
+  const renderTime = () => {
+    if (lastMessage) {
+      let date = lastMessage?.createdAt;
+      return formatDate(new Date(date?.seconds * 1000));
+    }
+  };
+
+  const renderLastMessage = () => {
+    if (typeof lastMessage === undefined) return "Loading...";
+    if (lastMessage) {
+      return lastMessage.text;
+    } else {
+      return "Say Hi";
+    }
   };
 
   return (
@@ -44,14 +87,14 @@ export default function ChatItem({
             style={{ fontSize: hp(1.6) }}
             className="font-semibold text-neutral-500"
           >
-            Time
+            {renderTime()}
           </Text>
         </View>
         <Text
           style={{ fontSize: hp(1.6) }}
           className="font-medium text-neutral-500"
         >
-          Last message
+          {renderLastMessage()}
         </Text>
       </View>
     </TouchableOpacity>

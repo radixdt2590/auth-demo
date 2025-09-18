@@ -19,7 +19,7 @@ export default function Home() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
-  
+
   useEffect(() => {
     if (user?.id) {
       getUsers();
@@ -34,7 +34,7 @@ export default function Home() {
     let data: User[] = [];
 
     querySnapshot.forEach((doc) => {
-      data.push({ ...doc.data() as User });
+      data.push({ ...(doc.data() as User) });
     });
 
     setUsers(data);
@@ -48,7 +48,7 @@ export default function Home() {
           <ActivityIndicator size={"large"} />
         </View>
       ) : users.length > 0 ? (
-        <ChatList users={users} />
+        <ChatList users={users} currentUser={user as User} />
       ) : (
         <View className="flex items-center" style={{ top: hp(30) }}>
           <Text className="text-gray-500">No users found</Text>

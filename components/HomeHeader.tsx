@@ -16,7 +16,6 @@ const blurhash =
 
 export default function HomeHeader() {
   const { top } = useSafeAreaInsets();
-  console.log("🚀 ~ HomeHeader ~ top:", top);
   const { user, logout } = useAuth();
 
   const handleLogout = async () => {
@@ -40,12 +39,12 @@ export default function HomeHeader() {
       <View className="flex">
         <Menu>
           <MenuTrigger>
-              <Image
-                style={{ height: hp(4.3), aspectRatio: 1, borderRadius: 100 }}
-                source={user?.profileUrl || defaultProfileUrl}
-                placeholder={{ blurhash }}
-                transition={1000}
-              />
+            <Image
+              style={{ height: hp(4.3), aspectRatio: 1, borderRadius: 100 }}
+              source={user?.profileUrl || defaultProfileUrl}
+              placeholder={{ blurhash }}
+              transition={1000}
+            />
           </MenuTrigger>
           <MenuOptions
             customStyles={{
@@ -63,7 +62,7 @@ export default function HomeHeader() {
           >
             <MenuItem
               text="Profile"
-              action={() => console.log("Profile clicked..")}
+              action={() => console.info("Profile clicked..")}
               value={null}
               icon={<Feather name="user" size={hp(2)} color={"#737373"} />}
             />

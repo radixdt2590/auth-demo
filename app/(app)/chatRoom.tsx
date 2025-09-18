@@ -17,17 +17,23 @@ import {
   query,
   setDoc,
 } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
-import { Alert, TextInput, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Alert,
+  Keyboard,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 export default function ChatRoom() {
   const item = useLocalSearchParams();
-  console.log("🚀 ~ ChatRoom ~ item:=============", item);
   const router = useRouter();
   const { user } = useAuth();
   const [messages, setMessages] = useState<any>([]);
   const [text, setText] = useState("");
+  const scrollViewRef = useRef<any>(null);
 
   useEffect(() => {
     createRoomIfNotExist();
@@ -42,9 +48,26 @@ export default function ChatRoom() {
       });
       setMessages([...allMessages]);
     });
+    const keyBoardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      updateScrollView
+    );
 
-    return unsub;
+    return () => {
+      unsub();
+      keyBoardDidShowListener.remove();
+    };
   }, []);
+
+  useEffect(() => {
+    updateScrollView();
+  }, [messages]);
+
+  const updateScrollView = () => {
+    setTimeout(() => {
+      scrollViewRef?.current?.scrollToEnd({ animated: false });
+    }, 100);
+  };
 
   const createRoomIfNotExist = async () => {
     let roomId = getRoomId(user?.id, item?.userId);
@@ -56,21 +79,19 @@ export default function ChatRoom() {
 
   const handleSendMessage = async () => {
     let message = text.trim();
-    console.log("🚀 ~ handleSendMessage ~ message:", message);
     if (!message) return;
     try {
       let roomId = getRoomId(user?.id, item?.userId);
       const docRef = doc(db, "rooms", roomId);
       const messageRef = collection(docRef, "messages");
       setText("");
-      const newDoc = await addDoc(messageRef, {
+      await addDoc(messageRef, {
         userId: user?.id,
         text: message,
         profileUrl: user?.profileUrl,
         senderName: user?.username,
         createdAt: Timestamp.fromDate(new Date()),
       });
-      console.log("new message Id---------", newDoc.id);
     } catch (err: any) {
       Alert.alert("Message", err.message);
     }
@@ -84,7 +105,11 @@ export default function ChatRoom() {
         <View className="h-3 border-b border-neutral-300" />
         <View className="flex-1 justify-between bg-neutral-100 overflow-visible">
           <View className="flex-1">
-            <MessageList messages={messages} currentUser={user} />
+            <MessageList
+              messages={messages}
+              currentUser={user}
+              scrollViewRef={scrollViewRef}
+            />
           </View>
           <View className="pt-2" style={{ marginBottom: hp(2.7) }}>
             <View className="flex-row mx-3 justify-between bg-white border p-2 border-neutral-300 rounded-full pl-5">
